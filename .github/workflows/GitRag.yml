@@ -1,4 +1,4 @@
-name: GitRag Indexing (Turso)
+name: GitRag Indexing
 
 on:
   push:
@@ -7,27 +7,17 @@ on:
     inputs:
       full_scan:
         description: 'Perform a full repository scan?'
-        required: true
         type: boolean
-        default: false  
+        default: false
 
 jobs:
   index:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          # REQUIRED: fetch-depth 0 is needed so the indexer can 
-          # compare commits to find changed files
-          fetch-depth: 0 
-
-      - name: Run GitRag Indexer
-        # Replace 'main' with the specific version/branch of GitRag you want
-        uses: dorphalsig/gitrag@main 
-        with:
-          repo: ${{ github.repository }}
-          branch: ${{ github.ref_name }}
-          db_provider: "libsql"
-          database_url: ${{ secrets.TURSO_DATABASE_URL }}
-          db_auth_token: ${{ secrets.TURSO_AUTH_TOKEN }}
+    uses: dorphalsig/gitrag/.github/workflows/reusable-indexer.yml@master
+    with:
+      repo: ${{ github.repository }}
+      branch: ${{ github.ref_name }}
+      db_provider: "libsql"
+      full_index: ${{ github.event.inputs.full_scan || false }}
+    secrets:
+      DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      DB_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}

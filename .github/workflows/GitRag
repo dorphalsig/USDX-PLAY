@@ -1,0 +1,33 @@
+name: GitRag Indexing
+
+on:
+  # Trigger automatically on push to main or master
+  push:
+    branches: [main, master]
+  
+  # Trigger manually from the GitHub UI
+  workflow_dispatch:
+    inputs:
+      full_index:
+        description: 'Force a Full Index Scan?'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Run GitRag Indexer
+        uses: dorphalsig/gitrag@master
+        with:
+          repo: ${{ github.repository }}
+          branch: ${{ github.ref_name }}
+          # Logic: Use the manual input if provided, otherwise default to 'false'
+          full_index: ${{ inputs.full_index || 'false' }}
+          turso_database_url: ${{ secrets.TURSO_DATABASE_URL }}
+          turso_auth_token: ${{ secrets.TURSO_AUTH_TOKEN }}

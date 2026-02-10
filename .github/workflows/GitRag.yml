@@ -17,7 +17,7 @@ jobs:
       repo: ${{ github.repository }}
       branch: ${{ github.ref_name }}
       db_provider: "libsql"
-      full_index: ${{ github.event.inputs.full_scan || false }}
+      full_index: ${{ inputs.full_scan || false }}
     secrets:
       DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
       DB_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}

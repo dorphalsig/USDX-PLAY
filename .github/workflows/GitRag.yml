@@ -14,8 +14,6 @@ jobs:
   index:
     uses: dorphalsig/gitrag/.github/workflows/indexer.yml@master
     with:
-      repo: ${{ github.repository }}
-      branch: ${{ github.ref_name }}
       db_provider: "libsql"
       full_index: ${{ inputs.full_scan || false }}
     secrets:
